@@ -13,6 +13,7 @@ object paths {
 
     override type ContextType = PathContexts
     override type Input = String
+    override type Output = Path
 
     override def contextualize(interpolation: StaticInterpolation): Seq[ContextType] = {
       interpolation.holes.map(_ => DefaultContext)

@@ -5,10 +5,11 @@ import shapeless.test.illTyped
 import com.kubukoz.paths._
 
 class PathSpec extends FlatSpec with Matchers {
+  implicit val bindable: PathBindable[EventId] =
+    PathBindable.bindableLong.transform(EventId, _.value)
 
   "path" should "interpolate values that have PathBindables" in {
     val eventId = EventId(1)
-    implicit val bindable: PathBindable[EventId] = PathBindable.bindableLong.transform(EventId, _.value)
 
     path"/events/$eventId" shouldBe Path("/events/1")
   }
@@ -16,6 +17,12 @@ class PathSpec extends FlatSpec with Matchers {
   it should "fail to compile if there is no PathBindable" in {
     val questId = QuestId(1)
     illTyped("""path"/quests/$questId"""")
+  }
+
+  it should "have the proper return type" in {
+    val eventId = EventId(1)
+
+    path"events/$eventId": Path
   }
 }
 
